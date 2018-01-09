@@ -4,16 +4,16 @@ package com.incognisyssolutions.mathformulas;
  * Created by CHARUL on 09-01-2018.
  */
 
-import java.util.HashMap;
-import java.util.List;
+        import java.util.HashMap;
+        import java.util.List;
 
-import android.content.Context;
-import android.graphics.Typeface;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
-import android.widget.TextView;
+        import android.content.Context;
+        import android.graphics.Typeface;
+        import android.view.LayoutInflater;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.BaseExpandableListAdapter;
+        import android.widget.TextView;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
