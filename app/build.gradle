@@ -6,6 +6,7 @@ android {
         applicationId "com.incognisyssolutions.mathformulas"
         minSdkVersion 15
         targetSdkVersion 26
+        buildToolsVersion '26.0.2'
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -19,6 +20,7 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:cardview-v7:26.+'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'

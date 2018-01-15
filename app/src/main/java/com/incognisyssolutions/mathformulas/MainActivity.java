@@ -1,5 +1,8 @@
 package com.incognisyssolutions.mathformulas;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    DatabaseAccess databaseAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +41,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -56,9 +53,12 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        this.expListView = (ExpandableListView) findViewById(R.id.lvExp);
 
 
+
+        databaseAccess = DatabaseAccess.getInstance(this);
+        databaseAccess.open();
 
 
         // preparing list data
@@ -105,82 +105,158 @@ public class MainActivity extends AppCompatActivity
 //
 //            }
 //        });
-//
-//        // Listview on child click listener
-//        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//
-//            @Override
-//            public boolean onChildClick(ExpandableListView parent, View v,
-//                                        int groupPosition, int childPosition, long id) {
-//                 TODO Auto-generated method stub
-//                Toast.makeText(
-//                        getApplicationContext(),
-//                        listDataHeader.get(groupPosition)
-//                                + " : "
-//                                + listDataChild.get(
-//                                listDataHeader.get(groupPosition)).get(
-//                                childPosition), Toast.LENGTH_SHORT)
-//                        .show();
-//                return false;
-//            }
-//        });
+        //databaseAccess.close();
+        listAdapter=new ExpandableListAdapter(this,listDataHeader,listDataChild);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, categories);
+        this.expListView.setAdapter(listAdapter);
+        // Listview on child click listener
+
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                SharedPreferences.Editor bundle = getSharedPreferences("app_details", Context.MODE_PRIVATE).edit();
+                bundle.putString("title",listDataChild.get(listDataHeader.get(groupPosition)).get(
+                                childPosition));
+                String s=databaseAccess.getFormula(listDataChild.get(
+                        listDataHeader.get(groupPosition)).get(
+                        childPosition));
+                bundle.putString("content",s);
+                bundle.apply();
+                startActivity(new Intent(getApplicationContext(), DetailsActivity.class));
+                finish();
+
+
+
+                return false;
+            }
+        });
+
+
     }
+
 
     /*
      * Preparing the list data
      */
     private void prepareListData() {
-        DatabaseAccess databaseAccess = DatabaseAccess.getInstance(this);
-        databaseAccess.open();
         List<String> categories = databaseAccess.getCategories();
 
-//        int x=databaseAccess.getCount();
-//        Toast.makeText(getApplicationContext(),x,Toast.LENGTH_SHORT).show();
+        List<String> algebra=databaseAccess.getSubCategories(1);
+        List<String> algebraList = new ArrayList<String>();
+        List<String> geometry=databaseAccess.getSubCategories(2);
+        List<String> geometryList = new ArrayList<String>();
+        List<String> trigonometry=databaseAccess.getSubCategories(3);
+        List<String> trigonometryList = new ArrayList<String>();
+        List<String> derivative=databaseAccess.getSubCategories(4);
+        List<String> derivativeList = new ArrayList<String>();
+        List<String> integration=databaseAccess.getSubCategories(5);
+        List<String> integrationList = new ArrayList<String>();
+        List<String> analytic=databaseAccess.getSubCategories(6);
+        List<String> analyticList = new ArrayList<String>();
+        List<String> probability=databaseAccess.getSubCategories(7);
+        List<String> probabilityList = new ArrayList<String>();
+        List<String> laplace=databaseAccess.getSubCategories(8);
+        List<String> laplaceList = new ArrayList<String>();
+        List<String> fourier=databaseAccess.getSubCategories(9);
+        List<String> fourierList = new ArrayList<String>();
+        List<String> series=databaseAccess.getSubCategories(10);
+        List<String> seriesList = new ArrayList<String>();
+        List<String> numericalMethods=databaseAccess.getSubCategories(11);
+        List<String> numericalMethodsList = new ArrayList<String>();
+        List<String> vector=databaseAccess.getSubCategories(12);
+        List<String> vectorList = new ArrayList<String>();
+        List<String> beta=databaseAccess.getSubCategories(13);
+        List<String> betaList = new ArrayList<String>();
+        List<String> zTransform=databaseAccess.getSubCategories(14);
+        List<String> zTransformList = new ArrayList<String>();
+        List<String> others=databaseAccess.getSubCategories(15);
+        List<String> othersList = new ArrayList<String>();
 
 
-        Toast.makeText(getApplicationContext(),categories.get(0),Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
 
-        databaseAccess.close();
-//        ExpandableListAdapter adapter = new ExpandableListAdapter();
-//        this.expListView.setAdapter(adapter);
-//        listDataHeader = new ArrayList<String>();
-//
+        //Toast.makeText(getApplicationContext(),algebra.get(0),Toast.LENGTH_LONG).show();
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        for(int i=0;i<categories.size();i++)
+        {
+            listDataHeader.add(categories.get(i));
+        }
+
+//        Toast.makeText(getApplicationContext(),algebra.size()+" - " + geometry.size(),Toast.LENGTH_LONG).show();
+
+        for (int i=0;i<algebra.size();i++){
+            algebraList.add(algebra.get(i));
+        }
+        for (int i=0;i<geometry.size();i++){
+            geometryList.add(geometry.get(i));
+        }
+        for (int i=0;i<trigonometry.size();i++){
+            trigonometryList.add(trigonometry.get(i));
+        }
+        for (int i=0;i<derivative.size();i++){
+            derivativeList.add(derivative.get(i));
+        }
+        for (int i=0;i<integration.size();i++){
+            integrationList.add(integration.get(i));
+        }
+        for (int i=0;i<analytic.size();i++){
+            analyticList.add(analytic.get(i));;
+        }
+        for (int i=0;i<probability.size();i++){
+            probabilityList.add(probability.get(i));
+        }
+        for (int i=0;i<laplace.size();i++){
+            laplaceList.add(laplace.get(i));
+        }
+        for (int i=0;i<fourier.size();i++){
+            fourierList.add(fourier.get(i));
+        }
+        for (int i=0;i<series.size();i++){
+            seriesList.add(series.get(i));
+        }
+        for (int i=0;i<numericalMethods.size();i++){
+            numericalMethodsList.add(numericalMethods.get(i));
+        }
+        for (int i=0;i<vector.size();i++){
+            vectorList.add(vector.get(i));
+        }
+        for (int i=0;i<beta.size();i++){
+            betaList.add(beta.get(i));
+        }
+        for (int i=0;i<zTransform.size();i++){
+            zTransformList.add(zTransform.get(i));
+        }
+        for (int i=0;i<others.size();i++){
+            othersList.add(others.get(i));
+        }
+
+        listDataChild.put(listDataHeader.get(0), algebraList); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), geometryList);
+        listDataChild.put(listDataHeader.get(2), trigonometryList);
+        listDataChild.put(listDataHeader.get(3), derivativeList);
+        listDataChild.put(listDataHeader.get(4), integrationList);
+        listDataChild.put(listDataHeader.get(5), analyticList);
+        listDataChild.put(listDataHeader.get(6), probabilityList);
+        listDataChild.put(listDataHeader.get(7), laplaceList);
+        listDataChild.put(listDataHeader.get(8), fourierList);
+        listDataChild.put(listDataHeader.get(9), seriesList);
+        listDataChild.put(listDataHeader.get(10), numericalMethodsList);
+        listDataChild.put(listDataHeader.get(11), vectorList);
+        listDataChild.put(listDataHeader.get(12), betaList);
+        listDataChild.put(listDataHeader.get(13), zTransformList);
+        listDataChild.put(listDataHeader.get(14), othersList);
 
 
-//        listDataChild = new HashMap<String, List<String>>();
-//
-//        // Adding child data
-//        listDataHeader.add("Top 250");
-//        listDataHeader.add("Now Showing");
-//        listDataHeader.add("Coming Soon..");
-//          Adding child data
-//        List<String> top250 = new ArrayList<String>();
-//        top250.add("The Shawshank Redemption");
-//        top250.add("The Godfather");
-//        top250.add("The Godfather: Part II");
-//        top250.add("Pulp Fiction");
-//        top250.add("The Good, the Bad and the Ugly");
-//        top250.add("The Dark Knight");
-//        top250.add("12 Angry Men");
-//
-//        List<String> nowShowing = new ArrayList<String>();
-//        nowShowing.add("The Conjuring");
-//        nowShowing.add("Despicable Me 2");
-//        nowShowing.add("Turbo");
-//        nowShowing.add("Grown Ups 2");
-//        nowShowing.add("Red 2");
-//        nowShowing.add("The Wolverine");
-//
-//        List<String> comingSoon = new ArrayList<String>();
-//        comingSoon.add("2 Guns");
-//        comingSoon.add("The Smurfs 2");
-//        comingSoon.add("The Spectacular Now");
-//        comingSoon.add("The Canyons");
-//        comingSoon.add("Europa Report");
-//
-//        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-//        listDataChild.put(listDataHeader.get(1), nowShowing);
-//        listDataChild.put(listDataHeader.get(2), comingSoon);
+
+
+
+
+
+
 
     }
 
@@ -193,6 +269,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        prepareListData();
     }
 
     @Override
@@ -212,6 +289,9 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id == R.id.action_search){
+            startActivity(new Intent(getApplicationContext(),SearchActivity.class));
         }
 
         return super.onOptionsItemSelected(item);

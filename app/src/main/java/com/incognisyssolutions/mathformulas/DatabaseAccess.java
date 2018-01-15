@@ -70,12 +70,56 @@ public class DatabaseAccess {
         cursor.close();
         return list;
     }
-    // Getting contacts Count
-    public int getCount() {
-        String countQuery = "SELECT * FROM CategoriesTbl";
-        Cursor cursor = database.rawQuery(countQuery, null);
-
-        // return count
-        return cursor.getCount();
+    public List<String> getSubCategories(int id) {
+        List<String> list = new ArrayList<>();
+        Cursor cursor = database.rawQuery("Select * from CategoriesTbl c LEFT JOIN FormulasTbl f ON c.cat_id=f.cat_id where c.cat_id="+id+"", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            //list.add(Integer.parseInt(cursor.getString(0)));
+            //list.add(cursor.getString(0));
+            list.add(cursor.getString(4));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return list;
     }
+    public List<String> getTopics() {
+        List<String> list = new ArrayList<>();
+        Cursor cursor = database.rawQuery("SELECT * FROM FormulasTbl", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            //list.add(Integer.parseInt(cursor.getString(0)));
+            list.add(cursor.getString(2));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return list;
+    }
+
+    public String getFormula(String s) {
+
+        String query = "select * from FormulasTbl where f_title='" + s + "'";
+        Cursor cursor = database.rawQuery(query, null);
+        String formula = null;
+        if (cursor != null && cursor.moveToFirst())
+        {
+            formula = cursor.getString(cursor.getColumnIndex("f_url"));
+            //cursor.close();
+        }
+        //cursor.moveToFirst();
+        // cursor.moveToNext();
+        //String formula =cursor.getString( cursor.getColumnIndex("f_url"));
+        cursor.close();
+        return formula;
+
+    }
+
+    // Getting contacts Count
+//    public int getCount() {
+//        String countQuery = "SELECT * FROM CategoriesTbl";
+//        Cursor cursor = database.rawQuery(countQuery, null);
+//
+//        // return count
+//        return cursor.getCount();
+//    }
 }

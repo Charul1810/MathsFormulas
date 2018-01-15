@@ -21,6 +21,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
     private HashMap<String, List<String>> _listDataChild;
+    private HashMap<List<String>, String> _ChildDescription;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
                                  HashMap<String, List<String>> listChildData) {
@@ -28,6 +29,53 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
     }
+
+    public ExpandableListAdapter(Context _context, List<String> listDataHeader, HashMap<String,
+            List<String>> listDataChild, HashMap<List<String>, String> ChildDescription) {
+        this._context = _context;
+        this._listDataHeader = listDataHeader;
+        this._listDataChild = listDataChild;
+        this._ChildDescription = ChildDescription;
+    }
+//////////////////////////
+//    @Override
+//    public Object getChildDescription(int childPosititon, int childDescriptionPosition) {
+//        return this._ChildDescription.get(this._listDataChild.get(childPosititon))
+//                .get(childPosititon);
+//    }
+//
+//    @Override
+//    public long getChildDescriptionId(int childPosititon, int childDescriptionPosition) {
+//        return childDescriptionPosition;
+//    }
+//
+//    @Override
+//    public View getChildView(int groupPosition, final int childPosition,
+//                             boolean isLastChild, View convertView, ViewGroup parent) {
+//
+//        final String childText = (String) getChild(groupPosition, childPosition);
+//
+//        if (convertView == null) {
+//            LayoutInflater infalInflater = (LayoutInflater) this._context
+//                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//            convertView = infalInflater.inflate(R.layout.list_item, null);
+//        }
+//
+//        TextView txtListChild = (TextView) convertView
+//                .findViewById(R.id.lblListItem);
+//
+//        txtListChild.setText(childText);
+//        return convertView;
+//    }
+//
+//    @Override
+//    public int getChildrenCount(int groupPosition) {
+//        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+//                .size();
+//    }
+
+///////////////////////////
+
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
