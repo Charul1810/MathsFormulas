@@ -24,6 +24,7 @@ public class SearchActivity extends AppCompatActivity {
     EditText inputSearch;
     ArrayAdapter<String> search_list;
     DatabaseAccess databaseAccess;
+    List<String> searchTopics;
 
 
     @Override
@@ -35,11 +36,12 @@ public class SearchActivity extends AppCompatActivity {
 
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
-        final List<String> searchTopics = databaseAccess.getTopics();
+        searchTopics = databaseAccess.getTopics();
         //Toast.makeText(getApplicationContext(),searchTopics.get(1),Toast.LENGTH_LONG).show();
-        search_list=new ArrayAdapter<String>
-                (this,R.layout.list_item_search,R.id.product_name,searchTopics);
+        search_list=new ArrayAdapter<String>(this,R.layout.list_item_search,R.id.product_name,searchTopics);
         lv.setAdapter(search_list);
+
+
 
 
 
@@ -49,6 +51,9 @@ public class SearchActivity extends AppCompatActivity {
             public  void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                 // When user changed the Text
                 SearchActivity.this.search_list.getFilter().filter(cs);
+//                search_list=new ArrayAdapter<String>(getApplicationContext(),R.layout.list_item_search,R.id.product_name,searchTopics);
+//                lv.setAdapter(search_list);
+
 
             }
 
@@ -56,12 +61,17 @@ public class SearchActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
                 // TODO Auto-generated method stub
+//                search_list=new ArrayAdapter<String>(getApplicationContext(),R.layout.list_item_search,R.id.product_name,searchTopics);
+//                lv.setAdapter(search_list);
 
             }
 
             @Override
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub
+//                search_list=new ArrayAdapter<String>(getApplicationContext(),R.layout.list_item_search,R.id.product_name,searchTopics);
+//                lv.setAdapter(search_list);
+
             }
         });
 
@@ -70,8 +80,8 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences.Editor bundle = getSharedPreferences("app_details", Context.MODE_PRIVATE).edit();
-                bundle.putString("title",searchTopics.get(position));
-                String s=databaseAccess.getFormula(searchTopics.get(position));
+                bundle.putString("title",search_list.getItem(position));
+                String s=databaseAccess.getFormula(search_list.getItem(position));
                 bundle.putString("content",s);
                 bundle.apply();
                 startActivity(new Intent(getApplicationContext(), DetailsActivity.class));
